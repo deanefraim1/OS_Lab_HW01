@@ -1,8 +1,8 @@
 #include <linux/sched.h>
 #include <linux/list.h>
-#include <linux/errno.h>
+#include <errno.h>
 #include <linux/string.h>
-#include <linux/current.h>
+#include <asm-i386/current.h>
 
 #define SECRET_MAXSIZE 32
 int magic_get_wand(int power, char secret[SECRET_MAXSIZE]);
