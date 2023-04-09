@@ -2,6 +2,7 @@
 #include <linux/list.h>
 #include <linux/errno.h>
 #include <linux/string.h>
+#include <linux/current.h>
 
 #define SECRET_MAXSIZE 32
 int magic_get_wand(int power, char secret[SECRET_MAXSIZE]);

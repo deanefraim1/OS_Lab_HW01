@@ -1,6 +1,14 @@
 #include "magic_syscall.h"
 
-bool IsSecretInList(struct list_head *secretsList, char secret[SECRET_MAXSIZE]);
+bool IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
+{
+    list_for_each(struct list_head *currentSecret, secretsList)
+    {
+        if(strcmp(currentSecret, secret) == 0)
+            true;
+    }
+    return false;
+}
 
 int magic_get_wand(int power, char secret[SECRET_MAXSIZE])
 {
@@ -137,12 +145,3 @@ int magic_list_secrets(char secrets[][SECRET_MAXSIZE], size_t size)
     return totalSecrets-size;
 }
 
-bool IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
-{
-    list_for_each(struct list_head *currentSecret, secretsList)
-    {
-        if(strcmp(currentSecret, secret) == 0)
-            true;
-    }
-    return false;
-}
