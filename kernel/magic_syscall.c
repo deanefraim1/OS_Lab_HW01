@@ -1,4 +1,4 @@
-#include "magic_syscall.h"
+#include <linux/magic_syscall.h>
 #include <asm/current.h>
 #include <linux/string.h>
 #include <asm/errno.h>
