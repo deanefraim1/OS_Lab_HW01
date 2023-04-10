@@ -1,134 +1,130 @@
 #include "magic_syscall.h"
+#include <asm/current.h>
+#include <linux/string.h>
+#include <asm/errno.h>
+#include <linux/sched.h>
 
-bool IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
+#define TRUE 1
+#define FALSE 0
+#define SUCCESS 0
+
+int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 {
-    list_for_each(struct list_head *currentSecret, secretsList)
+    struct list_head *currentSecret;
+    list_for_each(currentSecret, secretsList)
     {
-        if(strcmp(currentSecret, secret) == 0)
-            true;
+        if(strcmp(list_entry(currentSecret, struct wand_struct, stolen_secrets)->secret, secret) == 0) 
+            return TRUE;
     }
-    return false;
+    return FALSE;
 }
 
-int magic_get_wand(int power, char secret[SECRET_MAXSIZE])
+int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 {
     if(strlem(secret) == 0)
     {
-        errno = EINVAL;
-        return -1;
+        return -EINVAL;
     }
 
     struct task_struct *currentProccess = current;
     if(currentProccess->wand != NULL)
     {
-        errno = EEXIST;
-        return -1;
+        return -EEXIST;
     }
         
     struct wand_struct *wand = (struct wand_struct*)malloc(sizeof(struct wand_struct));
     if(wand == NULL)
     {
-        errno = ENOMEM;
-        return -1;
+        return -ENOMEM;
     }
         
     wand->power = power;
     wand->health = 100;
     if(strcpy(wand->secret, secret) == NULL)
     {
-        free(wand);
-        errno = EFAULT;
-        return -1;
+        free(wand); // should we free the wand in every error case?
+        return -EFAULT;
     }
 
-    INIT_LIST_HEAD(wand->stolen_secrets); // is this the way to init a list_head? 
-    return 0;
+    INIT_LIST_HEAD(wand->stolen_secrets);
+    return SUCCESS;
 }
 
-int magic_attack(pid_t pid)
+int magic_attack_syscall(pid_t pid)
 {
     struct task_struct *currentProccess = current;
     struct task_struct *proccessToAttack = find_task_by_pid(pid);
     if(proccessToAttack == NULL)
     {
-        errno = ESRCH;
-        return -1;
+        return -ESRCH;
     }
     struct wand_struct *currentProccessWand = currentProccess->wand;
     struct wand_struct *proccessToAttackWand = proccessToAttack->wand;
     if(proccessToAttackWand == NULL || currentProccessWand == NULL)
     {
-        errno = EPERM;
-        return -1;
+        return -EPERM;
     }
     if(proccessToAttackWand->health == 0)
     {
-        errno = EHOSTDOWN;
-        return -1;
+        return -EHOSTDOWN;
     }
-    if(pid == currentProccess->pid || IsSecretInList(proccessToAttack->stolen_secrets, currentProccess->secret))
+    if(pid == currentProccess->pid || IsSecretInList(proccessToAttack->stolen_secrets, currentProccess->secret) == TRUE)
     {
-        errno = ECONNREFUSED;
-        return -1;
+        return -CONNREFUSED;
     }
     proccessToAttackWand->health  = proccessToAttack->health - currentProccessWand->power > 0 ? proccessToAttack->health - currentProccessWand->power : 0;
-    return 0;
+    return SUCCESS;
 }
 
-int magic_legilimens(pid_t pid)
+int magic_legilimens_syscall(pid_t pid)
 {
     struct task_struct *currentProccess = current;
     struct task_struct *proccessToAttack = find_task_by_pid(pid);
     if(proccessToAttack == NULL)
     {
-        errno = ESRCH;
-        return -1;
+        return -ESRCH;
     }
     struct wand_struct *currentProccessWand = currentProccess->wand;
     struct wand_struct *proccessToAttackWand = proccessToAttack->wand;
     if(proccessToAttackWand == NULL || currentProccessWand == NULL)
     {
-        errno = EPERM;
-        return -1;
+        return -EPERM;
     }
     if(pid == currentProccess->pid)
     {
-        return 0;
+        return SUCCESS;
     }
     if(IsSecretInList(currentProccess->stolen_secrets, proccessToAttack->secret))
     {
-        errno = EEXIST;
-        return -1;
+        return -EEXIST;
     }
     list_add(currentProccess->stolen_secrets, proccessToAttack->secret);
-    return 0;
+    return SUCCESS;
 }
 
-int magic_list_secrets(char secrets[][SECRET_MAXSIZE], size_t size)
+int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
 {
     if(secrets == NULL)
     {
-        errno = EFAULT;
-        return -1;
+        return -EFAULT;
     }
     struct task_struct *currentProccess = current;
     struct wand_struct *currentProccessWand = currentProccess->wand;
     if(currentProccessWand == NULL)
     {
-        errno = EPERM;
-        return -1;
+        return -EPERM;
     }
     int i = 0;
     int totalSecrets = 0;
-    list_for_each(struct list_head * currentSecret, currentProccess->stolen_secrets)
+    struct list_head *currentSecret;
+    list_for_each(currentSecret, currentProccess->stolen_secrets)
     {
         totalSecrets++;
         if (i < size)
         {
-            if(strcpy(secrets[i], currentSecret) == NULL)
+            if(strcpy(secrets[i], currentSecret) == NULL) // should we use GET_LIST_ENTRY?
             {
-                errno = EFAULT;
-                return -1;
+                return -EFAULT;
             }
             i++;
             continue;
