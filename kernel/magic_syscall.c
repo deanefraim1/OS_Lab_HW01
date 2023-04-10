@@ -10,10 +10,10 @@
 
 int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 {
-    struct list_head *currentSecret;
-    list_for_each(currentSecret, secretsList)
+    struct stolenSecretListNode *currentStolenSecretNode;
+    list_for_each(currentStolenSecretNode, secretsList)
     {
-        if(strcmp(list_entry(currentSecret, struct wand_struct, stolen_secrets)->secret, secret) == 0) 
+        if(strcmp(list_entry(currentStolenSecretNode, struct stolenSecretListNode, secret), secret) == 0) 
             return TRUE;
     }
     return FALSE;
@@ -46,7 +46,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
         return -EFAULT;
     }
 
-    INIT_LIST_HEAD(wand->stolen_secrets);
+    INIT_LIST_HEAD(wand->stolenSecretsListHead);
     return SUCCESS;
 }
 
@@ -116,13 +116,13 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
     }
     int i = 0;
     int totalSecrets = 0;
-    struct list_head *currentSecret;
-    list_for_each(currentSecret, currentProccess->stolen_secrets)
+    struct stolenSecretListNode *currentStolenSecretNode;
+    list_for_each(currentStolenSecretNode, currentProccess->wand->stolenSecretsListHead)
     {
         totalSecrets++;
         if (i < size)
         {
-            if(strcpy(secrets[i], strcmp(list_entry(currentSecret, struct wand_struct, stolen_secrets)->secret) == NULL)) // should we use GET_LIST_ENTRY?
+            if(strcpy(secrets[i], list_entry(currentStolenSecretNode, struct stolenSecretListNode, secret)) == NULL)
             {
                 return -EFAULT;
             }
