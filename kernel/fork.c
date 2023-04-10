@@ -674,6 +674,9 @@ int do_fork(unsigned long clone_flags, unsigned long stack_start,
 	p->tty_old_pgrp = 0;
 	p->times.tms_utime = p->times.tms_stime = 0;
 	p->times.tms_cutime = p->times.tms_cstime = 0;
+
+	/* Initialize an empty wand struct */
+	p->wand = NULL;
 #ifdef CONFIG_SMP
 	{
 		int i;

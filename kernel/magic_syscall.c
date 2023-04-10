@@ -122,7 +122,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
         totalSecrets++;
         if (i < size)
         {
-            if(strcpy(secrets[i], currentSecret) == NULL) // should we use GET_LIST_ENTRY?
+            if(strcpy(secrets[i], strcmp(list_entry(currentSecret, struct wand_struct, stolen_secrets)->secret) == NULL)) // should we use GET_LIST_ENTRY?
             {
                 return -EFAULT;
             }
