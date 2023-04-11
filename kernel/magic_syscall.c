@@ -1,13 +1,19 @@
-#include <linux/magic_syscall.h>
 #include <asm/current.h>
 #include <linux/string.h>
 #include <asm/errno.h>
 #include <linux/sched.h>
 #include <linux/list.h>
+#include <linux/magic_syscall.h>
 
 #define TRUE 1
 #define FALSE 0
 #define SUCCESS 0
+
+struct stolenSecretListNode
+{
+    char secret[SECRET_MAXSIZE];
+    list_t* ptr;
+};
 
 int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 {
@@ -73,7 +79,7 @@ int magic_attack_syscall(pid_t pid)
     }
     if(pid == currentProccess->pid || IsSecretInList(proccessToAttackWand->stolenSecretsListHead, currentProccessWand->secret) == TRUE)
     {
-        return -CONNREFUSED;
+        return -ECONNREFUSED;
     }
     proccessToAttackWand->health  = proccessToAttackWand->health - currentProccessWand->power > 0 ? proccessToAttackWand->health - currentProccessWand->power : 0;
     return SUCCESS;
@@ -82,14 +88,14 @@ int magic_attack_syscall(pid_t pid)
 int magic_legilimens_syscall(pid_t pid)
 {
     struct task_struct *currentProccess = current;
-    struct task_struct *proccessToAttack = find_task_by_pid(pid);
-    if(proccessToAttack == NULL)
+    struct task_struct *proccessToStealFrom = find_task_by_pid(pid);
+    if(proccessToStealFrom == NULL)
     {
         return -ESRCH;
     }
     struct wand_struct *currentProccessWand = currentProccess->wand;
-    struct wand_struct *proccessToAttackWand = proccessToAttack->wand;
-    if(proccessToAttackWand == NULL || currentProccessWand == NULL)
+    struct wand_struct *proccessToStealFromWand = proccessToStealFrom->wand;
+    if(proccessToStealFromWand == NULL || currentProccessWand == NULL)
     {
         return -EPERM;
     }
@@ -97,11 +103,13 @@ int magic_legilimens_syscall(pid_t pid)
     {
         return SUCCESS;
     }
-    if(IsSecretInList(currentProccessWand->stolenSecretsListHead, proccessToAttackWand->secret))
+    if(IsSecretInList(currentProccessWand->stolenSecretsListHead, proccessToStealFromWand->secret))
     {
         return -EEXIST;
     }
-    list_add(currentProccessWand->stolenSecretsListHead, proccessToAttackWand->secret);
+    struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kalloc(sizeof(struct stolenSecretListNode));
+    strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
+    list_add(newStolenSecretNode->ptr, currentProccessWand->stolenSecretsListHead);
     return SUCCESS;
 }
 
@@ -117,32 +125,35 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
     {
         return -EPERM;
     }
-    int i = 0;
+    int numberOfSecretsCopied = 0;
     int totalSecrets = 0;
     list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
-    list_for_each(currentStolenSecretPtr, currentProccess->wand->stolenSecretsListHead)
+    list_for_each(currentStolenSecretPtr, currentProccessWand->stolenSecretsListHead)
     {
-        currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
         totalSecrets++;
-        if (i < size)
+        if(numberOfSecretsCopied < size)
         {
-            if(strcpy(secrets[i], list_entry(currentStolenSecretNode, struct stolenSecretListNode, secret)) == NULL) // FIXME
+            currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
+            if(secrets[numberOfSecretsCopied] == NULL || strcpy(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret) == NULL)
             {
                 return -EFAULT;
             }
-            i++;
-            continue;
+            numberOfSecretsCopied++;
         }
-        else if(i >= size)
+        continue;
+    }
+    if(size > numberOfSecretsCopied)
+    {
+        for(int i = numberOfSecretsCopied; i < size; i++)
         {
-            for(int j = i; j < size; j++)
+            if(secrets[i] == NULL)
             {
-                secrets[j][0] = '\0';
+                return -EFAULT;
             }
-            return 0;
+            secrets[i][0] = '/0';
         }
     }
-    return totalSecrets-size;
+    return totalSecrets-numberOfSecretsCopied;
 }
 
