@@ -3,6 +3,7 @@
 #include <linux/string.h>
 #include <asm/errno.h>
 #include <linux/sched.h>
+#include <linux/list.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -10,10 +11,12 @@
 
 int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 {
+    list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
-    list_for_each(currentStolenSecretNode, secretsList)
+    list_for_each(currentStolenSecretPtr, secretsList)
     {
-        if(strcmp(list_entry(currentStolenSecretNode, struct stolenSecretListNode, secret), secret) == 0) 
+        currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
+        if(strcmp(currentStolenSecretNode->secret, secret) == 0) 
             return TRUE;
     }
     return FALSE;
@@ -31,8 +34,8 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     {
         return -EEXIST;
     }
-        
-    struct wand_struct *wand = (struct wand_struct*)malloc(sizeof(struct wand_struct));
+    
+    struct wand_struct *wand = (struct wand_struct*)kalloc(sizeof(struct wand_struct));
     if(wand == NULL)
     {
         return -ENOMEM;
@@ -42,7 +45,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     wand->health = 100;
     if(strcpy(wand->secret, secret) == NULL)
     {
-        free(wand); // should we free the wand in every error case?
+        kfree(wand); // should we free the wand in every error case?
         return -EFAULT;
     }
 
@@ -68,11 +71,11 @@ int magic_attack_syscall(pid_t pid)
     {
         return -EHOSTDOWN;
     }
-    if(pid == currentProccess->pid || IsSecretInList(proccessToAttack->stolen_secrets, currentProccess->secret) == TRUE)
+    if(pid == currentProccess->pid || IsSecretInList(proccessToAttackWand->stolenSecretsListHead, currentProccessWand->secret) == TRUE)
     {
         return -CONNREFUSED;
     }
-    proccessToAttackWand->health  = proccessToAttack->health - currentProccessWand->power > 0 ? proccessToAttack->health - currentProccessWand->power : 0;
+    proccessToAttackWand->health  = proccessToAttackWand->health - currentProccessWand->power > 0 ? proccessToAttackWand->health - currentProccessWand->power : 0;
     return SUCCESS;
 }
 
@@ -94,11 +97,11 @@ int magic_legilimens_syscall(pid_t pid)
     {
         return SUCCESS;
     }
-    if(IsSecretInList(currentProccess->stolen_secrets, proccessToAttack->secret))
+    if(IsSecretInList(currentProccessWand->stolenSecretsListHead, proccessToAttackWand->secret))
     {
         return -EEXIST;
     }
-    list_add(currentProccess->stolen_secrets, proccessToAttack->secret);
+    list_add(currentProccessWand->stolenSecretsListHead, proccessToAttackWand->secret);
     return SUCCESS;
 }
 
@@ -116,13 +119,15 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
     }
     int i = 0;
     int totalSecrets = 0;
+    list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
-    list_for_each(currentStolenSecretNode, currentProccess->wand->stolenSecretsListHead)
+    list_for_each(currentStolenSecretPtr, currentProccess->wand->stolenSecretsListHead)
     {
+        currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
         totalSecrets++;
         if (i < size)
         {
-            if(strcpy(secrets[i], list_entry(currentStolenSecretNode, struct stolenSecretListNode, secret)) == NULL)
+            if(strcpy(secrets[i], list_entry(currentStolenSecretNode, struct stolenSecretListNode, secret)) == NULL) // FIXME
             {
                 return -EFAULT;
             }

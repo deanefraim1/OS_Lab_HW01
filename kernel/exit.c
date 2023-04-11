@@ -497,7 +497,7 @@ NORET_TYPE void do_exit(long code)
 		panic("Attempted to kill init!");
 	tsk->flags |= PF_EXITING;
 	del_timer_sync(&tsk->real_timer);
-
+	kfree(tsk->wand);
 
 	struct list_head *currentSecret;
     list_for_each(currentSecret, tsk->wand->stolen_secrets)
