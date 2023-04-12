@@ -42,7 +42,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
         return -EEXIST;
     }
     
-    struct wand_struct *wand = (struct wand_struct*)kalloc(sizeof(struct wand_struct));
+    struct wand_struct *wand = (struct wand_struct*)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
     if(wand == NULL)
     {
         return -ENOMEM;
@@ -108,7 +108,7 @@ int magic_legilimens_syscall(pid_t pid)
     {
         return -EEXIST;
     }
-    struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kalloc(sizeof(struct stolenSecretListNode));
+    struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kmalloc(sizeof(struct stolenSecretListNode), GFP_KERNEL);
     strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
     list_add(newStolenSecretNode->ptr, currentProccessWand->stolenSecretsListHead);
     return SUCCESS;
