@@ -18,4 +18,10 @@ struct wand_struct // how sched.h will know about this struct?
     struct list_head* stolenSecretsListHead;
 };
 
+struct stolenSecretListNode
+{
+    char secret[SECRET_MAXSIZE];
+    list_t* ptr;
+};
+
 #endif
