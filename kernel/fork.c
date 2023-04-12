@@ -677,6 +677,7 @@ int do_fork(unsigned long clone_flags, unsigned long stack_start,
 
 	/* Initialize an empty wand struct */
 	p->wand = NULL;
+	
 #ifdef CONFIG_SMP
 	{
 		int i;
