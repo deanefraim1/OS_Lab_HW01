@@ -500,7 +500,7 @@ NORET_TYPE void do_exit(long code)
 	// delete the wand structure from the task and its stolen_secrets list
 	list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
-    list_for_each(currentStolenSecretPtr, tsk->wand->stolen_secrets)
+    list_for_each(currentStolenSecretPtr, tsk->wand->stolenSecretsListHead)
     {
         currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
         list_del(currentStolenSecretPtr);
