@@ -23,6 +23,27 @@ int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
     return FALSE;
 }
 
+void PrintWandStatus(struct wand_struct *wand)
+{
+    printk("wand power: %d)", wand->power);
+    printk("wand health: %d)", wand->health);
+    printk("wand secret: %s)", wand->secret);
+    PrintStolenSecretList(wand->stolenSecretsListHead);
+}
+
+void PrintStolenSecretList(struct list_head* stolenSecretsListHead)
+{
+    list_t *currentStolenSecretPtr;
+    struct stolenSecretListNode *currentStolenSecretNode;
+    int i = 1;
+    list_for_each(currentStolenSecretPtr, stolenSecretsListHead)
+    {
+        currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
+        printk("stolen secret number %d: %s\n", i, currentStolenSecretNode->secret);
+        i++;
+    }
+}
+
 int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 {
     if(strlen(secret) == 0)
@@ -36,21 +57,25 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
         return -EEXIST;
     }
     
-    struct wand_struct *wand = (struct wand_struct*)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
-    if(wand == NULL)
+    struct wand_struct *currentProccessWand = (struct wand_struct*)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
+    if(currentProccessWand == NULL)
     {
         return -ENOMEM;
     }
         
-    wand->power = power;
-    wand->health = 100;
-    if(strcpy(wand->secret, secret) == NULL)
+    currentProccessWand->power = power;
+    currentProccessWand->health = 100;
+    if(strcpy(currentProccessWand->secret, secret) == NULL)
     {
-        kfree(wand); // should we free the wand in every error case?
+        kfree(currentProccessWand); // should we free the wand in every error case?
         return -EFAULT;
     }
 
-    INIT_LIST_HEAD(wand->stolenSecretsListHead);
+    INIT_LIST_HEAD(currentProccessWand->stolenSecretsListHead);
+
+    printk("status of pid:\n", currentProccess->pid);
+    PrintWandStatus(currentProccessWand);
+
     return SUCCESS;
 }
 
@@ -77,6 +102,12 @@ int magic_attack_syscall(pid_t pid)
         return -ECONNREFUSED;
     }
     proccessToAttackWand->health  = proccessToAttackWand->health - currentProccessWand->power > 0 ? proccessToAttackWand->health - currentProccessWand->power : 0;
+    
+    printk("status of pid:\n", currentProccess->pid);
+    PrintWandStatus(currentProccessWand);
+    printk("status of pid:\n", proccessToAttack->pid);
+    PrintWandStatus(proccessToAttackWand);
+
     return SUCCESS;
 }
 
@@ -105,6 +136,12 @@ int magic_legilimens_syscall(pid_t pid)
     struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kmalloc(sizeof(struct stolenSecretListNode), GFP_KERNEL);
     strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
     list_add(newStolenSecretNode->ptr, currentProccessWand->stolenSecretsListHead);
+
+    printk("status of pid:\n", currentProccess->pid);
+    PrintWandStatus(currentProccessWand);
+    printk("status of pid:\n", proccessToStealFrom->pid);
+    PrintWandStatus(proccessToStealFromWand);
+    
     return SUCCESS;
 }
 
