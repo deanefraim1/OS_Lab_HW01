@@ -10,12 +10,6 @@
 #define FALSE 0
 #define SUCCESS 0
 
-struct stolenSecretListNode
-{
-    char secret[SECRET_MAXSIZE];
-    list_t* ptr;
-};
-
 int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 {
     list_t *currentStolenSecretPtr;
