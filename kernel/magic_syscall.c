@@ -3,6 +3,7 @@
 #include <asm/errno.h>
 #include <linux/sched.h>
 #include <linux/list.h>
+#include <linux/slab.h>
 #include <linux/magic_syscall.h>
 
 #define TRUE 1
@@ -30,7 +31,7 @@ int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 
 int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 {
-    if(strlem(secret) == 0)
+    if(strlen(secret) == 0)
     {
         return -EINVAL;
     }
@@ -145,7 +146,8 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
     }
     if(size > numberOfSecretsCopied)
     {
-        for(int i = numberOfSecretsCopied; i < size; i++)
+        int i;
+        for (i = numberOfSecretsCopied; i < size; i++)
         {
             if(secrets[i] == NULL)
             {
