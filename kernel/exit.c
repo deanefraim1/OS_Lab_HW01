@@ -498,6 +498,7 @@ NORET_TYPE void do_exit(long code)
 		panic("Attempted to kill init!");
 	tsk->flags |= PF_EXITING;
 	del_timer_sync(&tsk->real_timer);
+	
 	// delete the wand structure from the task and its stolen_secrets list
 	list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
