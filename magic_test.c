@@ -13,6 +13,7 @@ int main()
         printf("2. Attack\n");
         printf("3. Legilimens\n");
         printf("4. List secrets\n");
+        printf("5. Exit\n");
         int actNumber;
         scanf("%d", &actNumber);
         switch (actNumber)
@@ -44,21 +45,25 @@ int main()
             case 4:
             {
                 printf("Please enter size: \n");
-                int size;
+                size_t size;
                 scanf("%d", size);
 
                 char** secrets = (char**)malloc(size * sizeof(char*));
-                for (int i = 0; i < size; i++)
+                int i;
+                for (i = 0; i < size; i++)
                 {
                     secrets[i] = (char*)malloc(SECRET_MAXSIZE * sizeof(char));
                 }
                 magic_list_secrets(secrets, size);
-                for (int i = 0; i < size; i++)
+                for (i = 0; i < size; i++)
                 {
                     printf("stolen secret number %d: %s\n",i, secrets[i]);
                 }
             }
+            case 5:
+            {
+                return 0;
+            }
         }
     }
-    
 }
