@@ -1,7 +1,6 @@
 #ifndef MAGIC_API_H
 #define MAGIC_API_H
 
-#include <linux/types.h>
 #include <errno.h>
 
 #define SECRET_MAXSIZE 32

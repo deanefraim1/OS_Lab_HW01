@@ -5,6 +5,7 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 #include <linux/magic_syscall.h>
+#include <linux/types.h>
 
 #define TRUE 1
 #define FALSE 0
