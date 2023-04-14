@@ -5,6 +5,8 @@
 
 #define SECRET_MAXSIZE 32
 
+typedef unsigned int size_t;
+
 int magic_get_wand(int power, char secret[SECRET_MAXSIZE]) {
     int res;
     __asm__
