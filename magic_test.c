@@ -4,6 +4,8 @@
 
 #define SECRET_MAXSIZE 32
 
+typedef unsigned int size_t;
+
 int main()
 {
     while(1)
