@@ -5,8 +5,6 @@
 
 #define SECRET_MAXSIZE 32
 
-typedef unsigned int size_t;
-
 int magic_get_wand(int power, char secret[SECRET_MAXSIZE]) {
     int res;
     __asm__
@@ -82,7 +80,7 @@ int magic_legilimens(int pid) {
     return res; 
 }
 
-int magic_list_secrets(char secrets[][SECRET_MAXSIZE], size_t size) {
+int magic_list_secrets(char secrets[][SECRET_MAXSIZE], unsigned int size) {
     int res; 
     __asm__
     (

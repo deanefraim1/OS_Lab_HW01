@@ -4,8 +4,6 @@
 
 #define SECRET_MAXSIZE 32
 
-typedef unsigned int size_t;
-
 int main()
 {
     while(1)
@@ -24,7 +22,7 @@ int main()
             {
                 printf("Please enter power: \n");
                 int power;
-                scanf("%d", power);
+                scanf("%d", &power);
                 printf("Please enter secret: \n");
                 char secret[SECRET_MAXSIZE];
                 scanf("%s", secret);
@@ -34,21 +32,21 @@ int main()
             {
                 printf("Please enter pid: \n");
                 int pid;
-                scanf("%d", pid);
+                scanf("%d", &pid);
                 magic_attack(pid);
             }
             case 3:
             {
                 printf("Please enter pid: \n");
                 int pid;
-                scanf("%d", pid);
+                scanf("%d", &pid);
                 magic_legilimens(pid);
             }
             case 4:
             {
                 printf("Please enter size: \n");
-                size_t size;
-                scanf("%d", size);
+                unsigned int size;
+                scanf("%d", &size);
 
                 char** secrets = (char**)malloc(size * sizeof(char*));
                 int i;
