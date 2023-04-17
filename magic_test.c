@@ -45,7 +45,7 @@ int main()
             case 4:
             {
                 printf("Please enter size: \n");
-                unsigned int size;
+                size_t size;
                 scanf("%d", &size);
 
                 char** secrets = (char**)malloc(size * sizeof(char*));
