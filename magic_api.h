@@ -2,6 +2,7 @@
 #define MAGIC_API_H
 
 #include <errno.h>
+#include <sys/types.h>
 
 #define SECRET_MAXSIZE 32
 
