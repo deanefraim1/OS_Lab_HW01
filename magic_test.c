@@ -1,6 +1,7 @@
 #include "magic_api.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 #define SECRET_MAXSIZE 32
 
@@ -46,7 +47,8 @@ int main()
             {
                 printf("Please enter size: \n");
                 size_t size;
-                scanf("%d", &size);
+                scanf("%zu", &size); // how do i scanf size_t?
+
 
                 char** secrets = (char**)malloc(size * sizeof(char*));
                 int i;
