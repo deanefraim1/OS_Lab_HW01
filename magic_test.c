@@ -47,7 +47,7 @@ int main()
             {
                 printf("Please enter size: \n");
                 size_t size;
-                scanf("%zu", &size); // how do i scanf size_t?
+                scanf("%zu", &size);
 
 
                 char** secrets = (char**)malloc(size * sizeof(char*));
@@ -61,6 +61,11 @@ int main()
                 {
                     printf("stolen secret number %d: %s\n",i, secrets[i]);
                 }
+                for (i = 0; i < size; i++)
+                {
+                    free(secrets[i]);
+                }
+                free(secrets);
             }
             case 5:
             {
