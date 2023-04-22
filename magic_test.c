@@ -24,7 +24,8 @@ int main()
                 int power;
                 scanf("%d", &power);
                 printf("Please enter secret: \n");
-                char secret[SECRET_MAXSIZE];
+                //char secret[SECRET_MAXSIZE];
+                char *secret = (char*)malloc(SECRET_MAXSIZE * sizeof(char));
                 scanf("%s", secret);
                 magic_get_wand(power, secret);
             }
