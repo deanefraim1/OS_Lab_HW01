@@ -29,12 +29,12 @@ void PrintWandStatus(struct wand_struct *wand)
     printk("wand power: %d\n", wand->power);
     printk("wand health: %d\n", wand->health);
     printk("wand secret: %s\n", wand->secret);
-    PrintStolenSecretList(wand->stolenSecretsListHead);
+    PrintStolenSecretList(&(wand->stolenSecretsListHead));
 }
 
-void PrintStolenSecretList(struct list_head* stolenSecretsListHead)
+void PrintStolenSecretList(struct list_head *stolenSecretsListHead)
 {
-    if(list_empty(stolenSecretsListHead))
+    if(list_empty(&stolenSecretsListHead))
     {
         printk("stolen secrets list is empty\n");
         return;
@@ -82,7 +82,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     }
     printk("after strcpy\n");
 
-    INIT_LIST_HEAD(currentProccessWand->stolenSecretsListHead);
+    INIT_LIST_HEAD(&(currentProccessWand->stolenSecretsListHead));
 
     printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);
@@ -108,7 +108,7 @@ int magic_attack_syscall(pid_t pid)
     {
         return -EHOSTDOWN;
     }
-    if(pid == currentProccess->pid || IsSecretInList(proccessToAttackWand->stolenSecretsListHead, currentProccessWand->secret) == TRUE)
+    if(pid == currentProccess->pid || IsSecretInList(&(proccessToAttackWand->stolenSecretsListHead), currentProccessWand->secret) == TRUE)
     {
         return -ECONNREFUSED;
     }
@@ -140,13 +140,13 @@ int magic_legilimens_syscall(pid_t pid)
     {
         return SUCCESS;
     }
-    if(IsSecretInList(currentProccessWand->stolenSecretsListHead, proccessToStealFromWand->secret))
+    if(IsSecretInList(&(currentProccessWand->stolenSecretsListHead), proccessToStealFromWand->secret))
     {
         return -EEXIST;
     }
     struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kmalloc(sizeof(struct stolenSecretListNode), GFP_KERNEL);
     strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
-    list_add(newStolenSecretNode->ptr, currentProccessWand->stolenSecretsListHead);
+    list_add(newStolenSecretNode->ptr, &(currentProccessWand->stolenSecretsListHead));
 
     printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);
@@ -172,7 +172,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
     int totalSecrets = 0;
     list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
-    list_for_each(currentStolenSecretPtr, currentProccessWand->stolenSecretsListHead)
+    list_for_each(currentStolenSecretPtr, &(currentProccessWand->stolenSecretsListHead))
     {
         totalSecrets++;
         if(numberOfSecretsCopied < size)

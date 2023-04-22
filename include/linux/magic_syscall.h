@@ -15,7 +15,7 @@ struct wand_struct // how sched.h will know about this struct?
     int power;
     int health;
     char secret[SECRET_MAXSIZE];
-    struct list_head* stolenSecretsListHead;
+    struct list_head stolenSecretsListHead;
 };
 
 struct stolenSecretListNode
