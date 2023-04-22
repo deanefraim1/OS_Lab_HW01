@@ -25,6 +25,7 @@ int main()
                 scanf("%d", &power);
                 printf("Please enter secret: \n");
                 char secret[SECRET_MAXSIZE];
+                memset(secret, 0, SECRET_MAXSIZE);
                 scanf("%s", secret);
                 printf("after scanf\n");
                 magic_get_wand(power, secret);
