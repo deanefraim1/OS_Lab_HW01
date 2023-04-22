@@ -24,11 +24,11 @@ int main()
                 int power;
                 scanf("%d", &power);
                 printf("Please enter secret: \n");
-                char secret[SECRET_MAXSIZE];
-                memset(secret, 0, SECRET_MAXSIZE);
+                char *secret = (char*)malloc(SECRET_MAXSIZE * sizeof(char));
                 scanf("%s", secret);
                 printf("after scanf\n");
                 magic_get_wand(power, secret);
+                free(secret);
                 break;
             }
             case 2:
