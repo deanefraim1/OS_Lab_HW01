@@ -26,14 +26,19 @@ int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 
 void PrintWandStatus(struct wand_struct *wand)
 {
-    printk("wand power: %d)", wand->power);
-    printk("wand health: %d)", wand->health);
-    printk("wand secret: %s)", wand->secret);
+    printk("wand power: %d)\n", wand->power);
+    printk("wand health: %d)\n", wand->health);
+    printk("wand secret: %s)\n", wand->secret);
     PrintStolenSecretList(wand->stolenSecretsListHead);
 }
 
 void PrintStolenSecretList(struct list_head* stolenSecretsListHead)
 {
+    if(list_empty(stolenSecretsListHead))
+    {
+        printk("stolen secrets list is empty\n");
+        return;
+    }
     list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
     int i = 1;
