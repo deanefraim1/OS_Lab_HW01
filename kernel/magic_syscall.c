@@ -79,6 +79,8 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 
     INIT_LIST_HEAD(&(currentProccessWand->stolenSecretsListHead));
 
+    currentProccess->wand = currentProccessWand;
+
     printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);
 
