@@ -27,6 +27,7 @@ int main()
                 //char secret[SECRET_MAXSIZE];
                 char *secret = (char*)malloc(SECRET_MAXSIZE * sizeof(char));
                 scanf("%s", secret);
+                printf("after scanf\n");
                 magic_get_wand(power, secret);
             }
             case 2:
