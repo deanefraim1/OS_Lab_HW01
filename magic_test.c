@@ -64,10 +64,12 @@ int main()
                     secrets[i] = (char*)malloc(SECRET_MAXSIZE * sizeof(char));
                 }
                 magic_list_secrets(secrets, size);
+                printf("100");
                 for (i = 0; i < size; i++)
                 {
                     printf("stolen secret number %d: %s\n",i, secrets[i]);
                 }
+                printf("101");
                 for (i = 0; i < size; i++)
                 {
                     free(secrets[i]);
