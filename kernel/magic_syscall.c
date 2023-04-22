@@ -34,7 +34,7 @@ void PrintWandStatus(struct wand_struct *wand)
 
 void PrintStolenSecretList(struct list_head *stolenSecretsListHead)
 {
-    if(list_empty(&stolenSecretsListHead))
+    if(list_empty(stolenSecretsListHead))
     {
         printk("stolen secrets list is empty\n");
         return;
