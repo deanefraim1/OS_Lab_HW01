@@ -57,8 +57,10 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     {
         return -EEXIST;
     }
-    
-    struct wand_struct *currentProccessWand = (struct wand_struct*)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
+
+    printk("before kmalloc\n");
+    struct wand_struct *currentProccessWand = (struct wand_struct *)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
+    printk("after kmalloc\n");
     if(currentProccessWand == NULL)
     {
         return -ENOMEM;
