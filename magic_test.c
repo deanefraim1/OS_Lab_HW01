@@ -24,11 +24,11 @@ int main()
                 int power;
                 scanf("%d", &power);
                 printf("Please enter secret: \n");
-                //char secret[SECRET_MAXSIZE];
-                char *secret = (char*)malloc(SECRET_MAXSIZE * sizeof(char));
+                char secret[SECRET_MAXSIZE];
                 scanf("%s", secret);
                 printf("after scanf\n");
                 magic_get_wand(power, secret);
+                break;
             }
             case 2:
             {
@@ -36,6 +36,7 @@ int main()
                 int pid;
                 scanf("%d", &pid);
                 magic_attack(pid);
+                break;
             }
             case 3:
             {
@@ -43,6 +44,7 @@ int main()
                 int pid;
                 scanf("%d", &pid);
                 magic_legilimens(pid);
+                break;
             }
             case 4:
             {
@@ -67,6 +69,7 @@ int main()
                     free(secrets[i]);
                 }
                 free(secrets);
+                break;
             }
             case 5:
             {
