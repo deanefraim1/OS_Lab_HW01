@@ -209,6 +209,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
         }
         printk("14\n");
     }
+    printk("15\n");
     return totalSecrets-numberOfSecretsCopied;
 }
 

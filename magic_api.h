@@ -81,7 +81,7 @@ int magic_legilimens(int pid) {
     return res; 
 }
 
-int magic_list_secrets(char** secrets, size_t size) {
+int magic_list_secrets(char secrets[][SECRET_MAXSIZE], size_t size) {
     int res; 
     __asm__
     (
