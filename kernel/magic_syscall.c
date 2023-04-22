@@ -193,7 +193,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
         continue;
     }
     printk("10\n");
-    if(size > numberOfSecretsCopied)
+    if(numberOfSecretsCopied < size) // 1  3
     {
         printk("11\n");
         int i;
