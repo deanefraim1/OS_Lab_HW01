@@ -154,7 +154,7 @@ int magic_legilimens_syscall(pid_t pid)
     printk("10\n");
     strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
     printk("11\n");
-    list_add_tail(newStolenSecretNode->ptr, &(currentProccessWand->stolenSecretsListHead));
+    list_add_tail(&(newStolenSecretNode->ptr), &(currentProccessWand->stolenSecretsListHead));
 
     printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);
