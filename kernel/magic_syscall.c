@@ -68,11 +68,14 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
         
     currentProccessWand->power = power;
     currentProccessWand->health = 100;
+    printk("before strcpy\n");
     if(strcpy(currentProccessWand->secret, secret) == NULL)
     {
         kfree(currentProccessWand); // should we free the wand in every error case?
+        printk("strcpy failed\n");
         return -EFAULT;
     }
+    printk("after strcpy\n");
 
     INIT_LIST_HEAD(currentProccessWand->stolenSecretsListHead);
 
