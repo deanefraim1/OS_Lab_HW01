@@ -79,7 +79,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 
     INIT_LIST_HEAD(currentProccessWand->stolenSecretsListHead);
 
-    printk("status of pid:\n", currentProccess->pid);
+    printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);
 
     return SUCCESS;
@@ -109,9 +109,9 @@ int magic_attack_syscall(pid_t pid)
     }
     proccessToAttackWand->health  = proccessToAttackWand->health - currentProccessWand->power > 0 ? proccessToAttackWand->health - currentProccessWand->power : 0;
     
-    printk("status of pid:\n", currentProccess->pid);
+    printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);
-    printk("status of pid:\n", proccessToAttack->pid);
+    printk("status of pid: %d\n", proccessToAttack->pid);
     PrintWandStatus(proccessToAttackWand);
 
     return SUCCESS;
@@ -143,9 +143,9 @@ int magic_legilimens_syscall(pid_t pid)
     strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
     list_add(newStolenSecretNode->ptr, currentProccessWand->stolenSecretsListHead);
 
-    printk("status of pid:\n", currentProccess->pid);
+    printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);
-    printk("status of pid:\n", proccessToStealFrom->pid);
+    printk("status of pid: %d\n", proccessToStealFrom->pid);
     PrintWandStatus(proccessToStealFromWand);
     
     return SUCCESS;
