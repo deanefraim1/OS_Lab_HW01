@@ -65,7 +65,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     {
         return -ENOMEM;
     }
-        
+
     currentProccessWand->power = power;
     currentProccessWand->health = 100;
     printk("before strcpy\n");
