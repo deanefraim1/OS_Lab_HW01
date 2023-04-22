@@ -1,6 +1,7 @@
 #include "magic_api.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define SECRET_MAXSIZE 32
 
@@ -14,6 +15,7 @@ int main()
         printf("3. Legilimens\n");
         printf("4. List secrets\n");
         printf("5. Exit\n");
+        printf("6. Get PID\n");
         int actNumber;
         scanf("%d", &actNumber);
         switch (actNumber)
@@ -77,6 +79,11 @@ int main()
             case 5:
             {
                 return 0;
+            }
+            case 6:
+            {
+                printf("pid = %d\n", getpid());
+                break;
             }
         }
     }
