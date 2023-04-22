@@ -63,9 +63,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
         return -EEXIST;
     }
 
-    printk("before kmalloc\n");
     struct wand_struct *currentProccessWand = (struct wand_struct *)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
-    printk("after kmalloc\n");
     if(currentProccessWand == NULL)
     {
         return -ENOMEM;
@@ -73,14 +71,11 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 
     currentProccessWand->power = power;
     currentProccessWand->health = 100;
-    printk("before strcpy\n");
     if(strcpy(currentProccessWand->secret, secret) == NULL)
     {
         kfree(currentProccessWand); // should we free the wand in every error case?
-        printk("strcpy failed\n");
         return -EFAULT;
     }
-    printk("after strcpy\n");
 
     INIT_LIST_HEAD(&(currentProccessWand->stolenSecretsListHead));
 
@@ -126,6 +121,7 @@ int magic_legilimens_syscall(pid_t pid)
 {
     struct task_struct *currentProccess = current;
     struct task_struct *proccessToStealFrom = find_task_by_pid(pid);
+    printk("secret to steal: %s\n", proccessToStealFrom->wand->secret);
     if(proccessToStealFrom == NULL)
     {
         return -ESRCH;
@@ -146,7 +142,7 @@ int magic_legilimens_syscall(pid_t pid)
     }
     struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kmalloc(sizeof(struct stolenSecretListNode), GFP_KERNEL);
     strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
-    list_add(newStolenSecretNode->ptr, &(currentProccessWand->stolenSecretsListHead));
+    list_add_tail(newStolenSecretNode->ptr, &(currentProccessWand->stolenSecretsListHead));
 
     printk("status of pid: %d\n", currentProccess->pid);
     PrintWandStatus(currentProccessWand);

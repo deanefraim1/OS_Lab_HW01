@@ -27,6 +27,7 @@ int main()
                 char secret[SECRET_MAXSIZE];
                 scanf("%s", secret); 
                 magic_get_wand(power, secret);
+                printf("errno = %d\n", errno);
                 break;
             }
             case 2:
@@ -35,6 +36,7 @@ int main()
                 int pid;
                 scanf("%d", &pid);
                 magic_attack(pid);
+                printf("errno = %d\n", errno);
                 break;
             }
             case 3:
@@ -43,6 +45,7 @@ int main()
                 int pid;
                 scanf("%d", &pid);
                 magic_legilimens(pid);
+                printf("errno = %d\n", errno);
                 break;
             }
             case 4:
@@ -68,6 +71,7 @@ int main()
                     free(secrets[i]);
                 }
                 free(secrets);
+                printf("errno = %d\n", errno);
                 break;
             }
             case 5:
