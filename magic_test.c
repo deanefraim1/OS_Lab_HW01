@@ -26,9 +26,7 @@ int main()
                 printf("Please enter secret: \n");
                 char secret[SECRET_MAXSIZE];
                 scanf("%s", secret); 
-                printf("after scanf\n");
                 magic_get_wand(power, secret);
-                free(secret);
                 break;
             }
             case 2:
