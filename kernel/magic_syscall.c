@@ -26,9 +26,9 @@ int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
 
 void PrintWandStatus(struct wand_struct *wand)
 {
-    printk("wand power: %d)\n", wand->power);
-    printk("wand health: %d)\n", wand->health);
-    printk("wand secret: %s)\n", wand->secret);
+    printk("wand power: %d\n", wand->power);
+    printk("wand health: %d\n", wand->health);
+    printk("wand secret: %s\n", wand->secret);
     PrintStolenSecretList(wand->stolenSecretsListHead);
 }
 
