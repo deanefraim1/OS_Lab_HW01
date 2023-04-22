@@ -504,7 +504,7 @@ NORET_TYPE void do_exit(long code)
 	{
 		list_t *currentStolenSecretPtr;
 		struct stolenSecretListNode *currentStolenSecretNode;
-		list_for_each(currentStolenSecretPtr, tsk->wand->stolenSecretsListHead)
+		list_for_each(currentStolenSecretPtr, &(tsk->wand->stolenSecretsListHead))
 		{
 			currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
 			list_del(currentStolenSecretPtr);
