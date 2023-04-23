@@ -55,10 +55,9 @@ int main()
                 printf("Please enter size: ");
                 size_t size;
                 scanf("%zu", &size);
-                char secrets[][SECRET_MAXSIZE] = malloc(size * SECRET_MAXSIZE * sizeof(char));
+                char (*secrets)[SECRET_MAXSIZE] = malloc(size * SECRET_MAXSIZE * sizeof(char));
                 int remainingSecretsNumber = magic_list_secrets(secrets, size);
                 printf("remainingSecretsNumber = %d\n", remainingSecretsNumber);
-                printf("errno = %d\n", errno);
                 int i;
                 for (i = 0; i < size; i++)
                 {

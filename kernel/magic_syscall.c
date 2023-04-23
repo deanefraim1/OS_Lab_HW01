@@ -19,7 +19,7 @@ int IsSecretInList(struct list_head* secretsList, char secret[SECRET_MAXSIZE])
     list_for_each(currentStolenSecretPtr, secretsList)
     {
         currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
-        if(strcmp(currentStolenSecretNode->secret, secret) == 0) 
+        if(strncmp(currentStolenSecretNode->secret, secret, SECRET_MAXSIZE) == 0) 
             return TRUE;
     }
     return FALSE;
@@ -72,7 +72,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 
     currentProccessWand->power = power;
     currentProccessWand->health = 100;
-    if(strcpy(currentProccessWand->secret, secret) == NULL)
+    if(copy_from_user(currentProccessWand->secret, secret, SECRET_MAXSIZE) != 0) // check if copy_to_user failed
     {
         kfree(currentProccessWand);
         return -EFAULT;
@@ -143,7 +143,7 @@ int magic_legilimens_syscall(pid_t pid)
         return -EEXIST;
     }
     struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kmalloc(sizeof(struct stolenSecretListNode), GFP_KERNEL);
-    strcpy(newStolenSecretNode->secret, proccessToStealFromWand->secret);
+    strncpy(newStolenSecretNode->secret, proccessToStealFromWand->secret, SECRET_MAXSIZE);
     list_add_tail(&(newStolenSecretNode->ptr), &(currentProccessWand->stolenSecretsListHead));
 
     printk("status of pid: %d\n", currentProccess->pid);
@@ -176,7 +176,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
         if(numberOfSecretsCopied < size)
         {
             currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
-            if(copy_to_user(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret, SECRET_MAXSIZE) == NULL) // check if copy_to_user failed
+            if(copy_to_user(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret, SECRET_MAXSIZE) != 0) // check if copy_to_user failed
             {
                 return -EFAULT;
             }
@@ -195,13 +195,6 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
             }
             secrets[i][0] = '\0';
         }
-    }
-
-    printk("1\n");
-    int i;
-    for (i = 0; i < size; i++)
-    {
-        printk("secret number %d: %s\n", i+1, secrets[i]);
     }
     
     return totalSecrets-numberOfSecretsCopied;
