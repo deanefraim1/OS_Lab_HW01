@@ -55,8 +55,6 @@ int main()
                 printf("Please enter size: ");
                 size_t size;
                 scanf("%zu", &size);
-
-
                 char** secrets = (char**)malloc(size * sizeof(char*));
                 int i;
                 for (i = 0; i < size; i++)

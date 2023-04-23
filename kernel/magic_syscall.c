@@ -155,61 +155,50 @@ int magic_legilimens_syscall(pid_t pid)
 
 int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
 {
-    printk("1\n");
     if (secrets == NULL)
     {
         return -EFAULT;
     }
-    printk("2\n");
     struct task_struct *currentProccess = current;
-    printk("3\n");
     struct wand_struct *currentProccessWand = currentProccess->wand;
-    printk("4\n");
     if(currentProccessWand == NULL)
     {
         return -EPERM;
     }
-    printk("5\n");
     int numberOfSecretsCopied = 0;
     int totalSecrets = 0;
     list_t *currentStolenSecretPtr;
     struct stolenSecretListNode *currentStolenSecretNode;
     list_for_each(currentStolenSecretPtr, &(currentProccessWand->stolenSecretsListHead))
     {
-        printk("6\n");
         totalSecrets++;
         if(numberOfSecretsCopied < size)
         {
-            printk("7\n");
             currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
-            printk("8\n");
             if(secrets[numberOfSecretsCopied] == NULL || strcpy(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret) == NULL)
             {
                 return -EFAULT;
             }
-            printk("hi %s\n", secrets[numberOfSecretsCopied]);
             numberOfSecretsCopied++;
         }
         continue;
     }
-    printk("10\n");
-    if(numberOfSecretsCopied < size) // 1  3
+    if(numberOfSecretsCopied < size)
     {
-        printk("11\n");
         int i;
         for (i = numberOfSecretsCopied; i < size; i++)
         {
-            printk("12\n");
             if(secrets[i] == NULL)
             {
                 return -EFAULT;
             }
-            printk("13\n");
             secrets[i][0] = '/0';
         }
-        printk("14\n");
     }
-    printk("15\n");
+
+    printk("tring to print secrets\n");
+    printk("status of pid: %d\n", currentProccess->pid);
+    PrintWandStatus(currentProccessWand);
     return totalSecrets-numberOfSecretsCopied;
 }
 
