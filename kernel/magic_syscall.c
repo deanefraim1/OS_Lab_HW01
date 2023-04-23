@@ -6,6 +6,7 @@
 #include <linux/slab.h>
 #include <linux/magic_syscall.h>
 #include <linux/types.h>
+#include <asm/uaccess.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -175,7 +176,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
         if(numberOfSecretsCopied < size)
         {
             currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
-            if(secrets[numberOfSecretsCopied] == NULL || strcpy(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret) == NULL)
+            if(copy_to_user(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret, SECRET_MAXSIZE) == NULL) // check if copy_to_user failed
             {
                 return -EFAULT;
             }
