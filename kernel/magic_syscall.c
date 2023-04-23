@@ -192,7 +192,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
             {
                 return -EFAULT;
             }
-            secrets[i][0] = '/0';
+            secrets[i][0] = '\0';
         }
     }
 
