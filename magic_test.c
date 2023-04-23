@@ -66,7 +66,7 @@ int main()
                 printf("errno = %d\n", errno);
                 for (i = 0; i < size; i++)
                 {
-                    printf("stolen secret number %d: %s\n",i, secrets[i]);
+                    printf("stolen secret number %d: %s\n",i+1, secrets[i]);
                 }
                 printf("101\n");
                 for (i = 0; i < size; i++)
