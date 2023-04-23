@@ -200,7 +200,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
     int i;
     for (i = 0; i < size; i++)
     {
-        printk("secret number %d: %s\n", i, secrets[i]);
+        printk("secret number %d: %s\n", i+1, secrets[i]);
     }
     
     return totalSecrets-numberOfSecretsCopied;
