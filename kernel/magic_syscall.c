@@ -196,9 +196,12 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
         }
     }
 
-    printk("tring to print secrets\n");
-    printk("status of pid: %d\n", currentProccess->pid);
-    PrintWandStatus(currentProccessWand);
+    printk("1\n");
+    for (int i = 0; i < size; i++)
+    {
+        printk("secret number %d: %s\n", i, secrets[i]);
+    }
+    
     return totalSecrets-numberOfSecretsCopied;
 }
 
