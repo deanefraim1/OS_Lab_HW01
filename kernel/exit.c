@@ -510,6 +510,7 @@ NORET_TYPE void do_exit(long code)
 			list_del(currentStolenSecretPtr);
 			kfree(currentStolenSecretNode);
 		}
+		kfree(tsk->wand);
 	}
 
 fake_volatile:

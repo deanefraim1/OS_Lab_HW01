@@ -22,10 +22,10 @@ int main()
         {
             case 1:
             {
-                printf("Please enter power: \n");
+                printf("Please enter power: ");
                 int power;
                 scanf("%d", &power);
-                printf("Please enter secret: \n");
+                printf("Please enter secret: ");
                 char secret[SECRET_MAXSIZE];
                 scanf("%s", secret); 
                 magic_get_wand(power, secret);
@@ -34,7 +34,7 @@ int main()
             }
             case 2:
             {
-                printf("Please enter pid: \n");
+                printf("Please enter pid: ");
                 int pid;
                 scanf("%d", &pid);
                 magic_attack(pid);
@@ -43,7 +43,7 @@ int main()
             }
             case 3:
             {
-                printf("Please enter pid: \n");
+                printf("Please enter pid: ");
                 int pid;
                 scanf("%d", &pid);
                 magic_legilimens(pid);
@@ -52,7 +52,7 @@ int main()
             }
             case 4:
             {
-                printf("Please enter size: \n");
+                printf("Please enter size: ");
                 size_t size;
                 scanf("%zu", &size);
 
