@@ -63,7 +63,7 @@ int main()
                 }
                 int remainingSecretsNumber = magic_list_secrets(secrets, size);
                 printf("remainingSecretsNumber = %d\n", remainingSecretsNumber);
-                printf("100\n");
+                printf("errno = %d\n", errno);
                 for (i = 0; i < size; i++)
                 {
                     printf("stolen secret number %d: %s\n",i, secrets[i]);
