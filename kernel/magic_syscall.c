@@ -198,7 +198,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
 
     printk("1\n");
     int i;
-    for (int i = 0; i < size; i++)
+    for (i = 0; i < size; i++)
     {
         printk("secret number %d: %s\n", i, secrets[i]);
     }
