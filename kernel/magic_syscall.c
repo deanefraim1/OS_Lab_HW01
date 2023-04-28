@@ -65,7 +65,8 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     }
 
     struct wand_struct *currentProccessWand = (struct wand_struct *)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
-    if(currentProccessWand == NULL)
+    printk("kmalloc: struct wand_struct\n");
+    if (currentProccessWand == NULL)
     {
         return -ENOMEM;
     }
@@ -75,6 +76,7 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     if(copy_from_user(currentProccessWand->secret, secret, SECRET_MAXSIZE) != 0) // check if copy_to_user failed
     {
         kfree(currentProccessWand);
+        printk("kfree: struct wand_struct\n");
         return -EFAULT;
     }
 
@@ -135,6 +137,7 @@ int magic_legilimens_syscall(pid_t pid)
         return -EEXIST;
     }
     struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kmalloc(sizeof(struct stolenSecretListNode), GFP_KERNEL);
+    printk("kmalloc: struct stolenSecretListNode\n");
     strncpy(newStolenSecretNode->secret, proccessToStealFromWand->secret, SECRET_MAXSIZE);
     list_add_tail(&(newStolenSecretNode->ptr), &(currentProccessWand->stolenSecretsListHead));
     

@@ -509,8 +509,10 @@ NORET_TYPE void do_exit(long code)
 			currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
 			list_del(currentStolenSecretPtr);
 			kfree(currentStolenSecretNode);
+			printk("kfree: struct stolenSecretListNode");
 		}
 		kfree(tsk->wand);
+		printk("kfree: struct wand_struct");
 	}
 
 fake_volatile:
