@@ -183,6 +183,9 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
             secrets[i][0] = '\0';
         }
     }
+
+    printk("status of pid %d wand:\n", currentProccess->pid);
+    PrintWandStatus(currentProccessWand);
     
     return totalSecrets-numberOfSecretsCopied;
 }

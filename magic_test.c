@@ -31,7 +31,8 @@ int main()
                 scanf("%s", secret); 
                 int ret = magic_get_wand(power, secret);
                 printf("return value = %d\n", ret);
-                printf("errno = %d\n", errno);
+                if(ret < 0)
+                    printf("errno = %d\n", errno);
                 break;
             }
             case 2:
@@ -41,7 +42,8 @@ int main()
                 scanf("%d", &pid);
                 int ret = magic_attack(pid);
                 printf("return value = %d\n", ret);
-                printf("errno = %d\n", errno);
+                if(ret < 0)
+                    printf("errno = %d\n", errno);
                 break;
             }
             case 3:
@@ -51,7 +53,8 @@ int main()
                 scanf("%d", &pid);
                 int ret = magic_legilimens(pid);
                 printf("return value = %d\n", ret);
-                printf("errno = %d\n", errno);
+                if(ret < 0)
+                    printf("errno = %d\n", errno);
                 break;
             }
             case 4:
@@ -62,7 +65,8 @@ int main()
                 char (*secrets)[SECRET_MAXSIZE] = malloc(size * SECRET_MAXSIZE * sizeof(char));
                 int ret = magic_list_secrets(secrets, size);
                 printf("return value = %d\n", ret);
-                printf("errno = %d\n", errno);
+                if(ret < 0)
+                    printf("errno = %d\n", errno);
                 int i;
                 for (i = 0; i < size; i++)
                 {
@@ -90,10 +94,10 @@ int main()
                     scanf("%d", &pid);
                     int ret = magic_attack(pid);
                     printf("return value = %d\n", ret);
-                    printf("errno = %d\n", errno);
+                    if(ret < 0)
+                        printf("errno = %d\n", errno);
                     return 0;
                 }
-                // wait for child to finish
                 else
                 {
                     waitpid(pid, NULL, 0);
