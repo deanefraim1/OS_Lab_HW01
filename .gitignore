@@ -2,3 +2,4 @@
 .vscode/c_cpp_properties.json
 .vscode/tasks.json
 /ex1_s23.pdf
+.DS_Store
