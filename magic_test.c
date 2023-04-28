@@ -16,6 +16,7 @@ int main()
         printf("4. List secrets\n");
         printf("5. Exit\n");
         printf("6. Get PID\n");
+        printf("7. Check if fork+Attack fails/n");
         int actNumber;
         scanf("%d", &actNumber);
         switch (actNumber)
@@ -28,7 +29,8 @@ int main()
                 printf("Please enter secret: ");
                 char secret[SECRET_MAXSIZE];
                 scanf("%s", secret); 
-                magic_get_wand(power, secret);
+                int ret = magic_get_wand(power, secret);
+                printf("return value = %d\n", ret);
                 printf("errno = %d\n", errno);
                 break;
             }
@@ -37,7 +39,8 @@ int main()
                 printf("Please enter pid: ");
                 int pid;
                 scanf("%d", &pid);
-                magic_attack(pid);
+                int ret = magic_attack(pid);
+                printf("return value = %d\n", ret);
                 printf("errno = %d\n", errno);
                 break;
             }
@@ -46,7 +49,8 @@ int main()
                 printf("Please enter pid: ");
                 int pid;
                 scanf("%d", &pid);
-                magic_legilimens(pid);
+                int ret = magic_legilimens(pid);
+                printf("return value = %d\n", ret);
                 printf("errno = %d\n", errno);
                 break;
             }
@@ -56,16 +60,15 @@ int main()
                 size_t size;
                 scanf("%zu", &size);
                 char (*secrets)[SECRET_MAXSIZE] = malloc(size * SECRET_MAXSIZE * sizeof(char));
-                int remainingSecretsNumber = magic_list_secrets(secrets, size);
-                printf("remainingSecretsNumber = %d\n", remainingSecretsNumber);
+                int ret = magic_list_secrets(secrets, size);
+                printf("return value = %d\n", ret);
+                printf("errno = %d\n", errno);
                 int i;
                 for (i = 0; i < size; i++)
                 {
                     printf("stolen secret number %d: %s\n",i+1, secrets[i]);
                 }
-                printf("101\n");
                 free(secrets);
-                printf("errno = %d\n", errno);
                 break;
             }
             case 5:
@@ -75,6 +78,21 @@ int main()
             case 6:
             {
                 printf("pid = %d\n", getpid());
+                break;
+            }
+            case 7:
+            {
+                int pid = fork();
+                if(pid == 0)
+                {
+                    printf("Please enter pid: ");
+                    int pid;
+                    scanf("%d", &pid);
+                    int ret = magic_attack(pid);
+                    printf("return value = %d\n", ret);
+                    printf("errno = %d\n", errno);
+                    return 0;
+                }
                 break;
             }
         }
