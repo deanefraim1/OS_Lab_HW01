@@ -65,7 +65,6 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
     }
 
     struct wand_struct *currentProccessWand = (struct wand_struct *)kmalloc(sizeof(struct wand_struct), GFP_KERNEL);
-    printk("kmalloc: struct wand_struct\n");
     if (currentProccessWand == NULL)
     {
         return -ENOMEM;
@@ -73,10 +72,9 @@ int magic_get_wand_syscall(int power, char secret[SECRET_MAXSIZE])
 
     currentProccessWand->power = power;
     currentProccessWand->health = 100;
-    if(copy_from_user(currentProccessWand->secret, secret, SECRET_MAXSIZE) != 0) // check if copy_to_user failed
+    if(copy_from_user(currentProccessWand->secret, secret, SECRET_MAXSIZE) != 0)
     {
         kfree(currentProccessWand);
-        printk("kfree: struct wand_struct\n");
         return -EFAULT;
     }
 
@@ -137,7 +135,6 @@ int magic_legilimens_syscall(pid_t pid)
         return -EEXIST;
     }
     struct stolenSecretListNode *newStolenSecretNode = (struct stolenSecretListNode*)kmalloc(sizeof(struct stolenSecretListNode), GFP_KERNEL);
-    printk("kmalloc: struct stolenSecretListNode\n");
     strncpy(newStolenSecretNode->secret, proccessToStealFromWand->secret, SECRET_MAXSIZE);
     list_add_tail(&(newStolenSecretNode->ptr), &(currentProccessWand->stolenSecretsListHead));
     
@@ -166,7 +163,7 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
         if(numberOfSecretsCopied < size)
         {
             currentStolenSecretNode = list_entry(currentStolenSecretPtr, struct stolenSecretListNode, ptr);
-            if(copy_to_user(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret, SECRET_MAXSIZE) != 0) // check if copy_to_user failed
+            if(copy_to_user(secrets[numberOfSecretsCopied], currentStolenSecretNode->secret, SECRET_MAXSIZE) != 0)
             {
                 return -EFAULT;
             }
@@ -186,9 +183,6 @@ int magic_list_secrets_syscall(char secrets[][SECRET_MAXSIZE], size_t size)
             secrets[i][0] = '\0';
         }
     }
-
-    printk("status of pid %d wand:\n", currentProccess->pid);
-    PrintWandStatus(currentProccessWand);
     
     return totalSecrets-numberOfSecretsCopied;
 }
