@@ -16,7 +16,7 @@ int main()
         printf("4. List secrets\n");
         printf("5. Exit\n");
         printf("6. Get PID\n");
-        printf("7. Check if fork+Attack fails/n");
+        printf("7. Check if fork+Attack fails\n");
         int actNumber;
         scanf("%d", &actNumber);
         switch (actNumber)
@@ -92,6 +92,11 @@ int main()
                     printf("return value = %d\n", ret);
                     printf("errno = %d\n", errno);
                     return 0;
+                }
+                // wait for child to finish
+                else
+                {
+                    waitpid(pid, NULL, 0);
                 }
                 break;
             }
